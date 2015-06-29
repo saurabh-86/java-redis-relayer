@@ -1,0 +1,36 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.7
+version = '1.0'
+
+repositories {
+    maven { url 'http://artifactory.nm.flipkart.com:8081/artifactory/libs-snapshots-local/' }
+    maven { url 'http://artifactory.nm.flipkart.com:8081/artifactory/libs-releases' }
+    maven { url 'http://artifactory.nm.flipkart.com:8081/artifactory/libs-releases-local' }
+    maven { url 'http://artifactory.nm.flipkart.com:8081/artifactory/libs-snapshots'}
+    maven { url 'http://artifactory.nm.flipkart.com:8081/artifactory/libs-release-local' }
+}
+
+dependencies {
+    compile "redis.clients:jedis:2.7.2",
+ //           'org.apache.httpcomponents:httpclient:4.5',
+            'com.google.guava:guava:18.0',
+            'com.sun.jersey:jersey-client:1.17.1',
+            'org.apache.commons:commons-lang3:3.0',
+            'org.projectlombok:lombok:1.16.4',
+            'org.yaml:snakeyaml:1.15',
+            'io.dropwizard.metrics:metrics-httpclient:3.1.0'
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Redis Relayer',
+                'Implementation-Version': version,
+                'Main-Class': 'com.flipkart.relayer.Application'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
