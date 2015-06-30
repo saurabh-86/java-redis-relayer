@@ -1,0 +1,62 @@
+PACKAGE=fk-redis-relayer
+USERNAME=fk-supply-chain
+STARTUP_COMMAND="com.flipkart.relayer.Application"
+
+check_process() {
+    PID=`pgrep -f "$STARTUP_COMMAND"`
+}
+
+start() {
+    check_process
+
+    if [ $? -ne 0 ]; then
+        echo "Starting $PACKAGE..."
+        ulimit -n 30000
+        cd /var/lib/$PACKAGE
+        sudo -u $USERNAME java -server -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/var/log/flipkart/$PACKAGE/gc.log -Dcom.sun.management.jmxremote -Djava.net.preferIPv4Stack=true -Dcom.sun.management.jmxremote.port=40406 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -XX:+AggressiveOpts -XX:+UseCompressedOops -Xms32g -Xmx32g -Xmn10g -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=64m -Xss512k -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:SurvivorRatio=5 -XX:CompileThreshold=5000 -XX:+UseStringCache -jar redis-relayer-shaded.jar /etc/$PACKAGE/relayer.yml > /dev/null 2>&1 &
+        echo "Started $PACKAGE."
+    else
+        echo "The process is already running."
+    fi
+}
+
+stop() {
+    check_process
+    if [ $? -ne 0 ]; then
+        echo "Process is already stopped"
+    else
+        pkill -9 -f "${STARTUP_COMMAND}"
+        echo "Stopped $PACKAGE."
+    fi
+}
+
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+	start)
+        start
+	;;
+	stop)
+		stop
+	;;
+	restart)
+        restart
+    ;;
+    status)
+        check_process
+        if [ $? -ne 0 ]; then
+            echo "Process is already stopped"
+        else
+            echo "Process is running"
+        fi
+    ;;
+	*)
+		echo "USAGE: $0 start | stop | restart | status"
+		exit 3
+	;;
+esac
+

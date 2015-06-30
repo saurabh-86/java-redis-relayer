@@ -1,0 +1,10 @@
+Package: fk-redis-relayer
+Version: VERSION 
+Section: web
+Priority: Optional
+Architecture: all
+Essential: no
+Depends: oracle-java7-installer
+Installed-Size: 1000
+Maintainer: Saurabh Agrawal saurabh.agrawal@flipkart.com
+Description: Redis Relayer
