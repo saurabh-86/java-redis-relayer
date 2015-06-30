@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class Application {
 
-    private static final String DEFAULT_CONFIG_FILE = "relayer.config";
+    private static final String DEFAULT_CONFIG_FILE = "relayer.yml";
 
     private static final MetricRegistry metrics = new MetricRegistry();
 
