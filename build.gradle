@@ -1,8 +1,13 @@
-apply plugin: 'java'
+plugins {
+    id "com.github.johnrengelman.shadow" version "1.2.1"
+}
+
+apply plugin: 'application'
 apply plugin: 'idea'
 
 sourceCompatibility = 1.7
 version = '1.0'
+mainClassName = "com.flipkart.relayer.Application"
 
 repositories {
     maven { url 'http://artifactory.nm.flipkart.com:8081/artifactory/libs-snapshots-local/' }
@@ -14,7 +19,6 @@ repositories {
 
 dependencies {
     compile "redis.clients:jedis:2.7.2",
- //           'org.apache.httpcomponents:httpclient:4.5',
             'com.google.guava:guava:18.0',
             'com.sun.jersey:jersey-client:1.17.1',
             'org.apache.commons:commons-lang3:3.0',
