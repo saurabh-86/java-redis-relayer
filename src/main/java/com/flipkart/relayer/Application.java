@@ -1,11 +1,10 @@
 package com.flipkart.relayer;
 
-import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.flipkart.relayer.config.RelayerConfig;
+import com.flipkart.relayer.executor.RelayExecutorFactory;
 import com.flipkart.relayer.service.MessageListProcessorFactory;
-import com.flipkart.relayer.service.RelayExecutorFactory;
 import com.flipkart.relayer.service.RelayerService;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Service;
@@ -19,7 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by saurabh.agrawal on 27/06/15.

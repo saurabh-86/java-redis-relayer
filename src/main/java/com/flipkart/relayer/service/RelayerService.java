@@ -47,7 +47,8 @@ public class RelayerService extends AbstractIdleService {
         this.restbusUrl = restbusUrl;
         this.metrics = metrics;
 
-        final InstrumentedHttpClientConnectionManager connectionManager = new InstrumentedHttpClientConnectionManager(this.metrics);
+        final InstrumentedHttpClientConnectionManager connectionManager =
+                new InstrumentedHttpClientConnectionManager(this.metrics);
         connectionManager.setMaxTotal(maxRestbusConnections);
         connectionManager.setDefaultMaxPerRoute(maxRestbusConnections);
 
