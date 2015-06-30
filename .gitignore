@@ -1,0 +1,23 @@
+*.class
+*.iml
+*.ipr
+*.iws
+*.DS_Store
+# Package Files #
+*.jar
+*.war
+*.ear
+*.log
+*.rdb
+*capfile
+
+# Target directory #
+*logs/**
+*target/**
+*.idea/**
+*.gradle/**
+*build/**
+*out/**
+*javadoc/**
+docs/build/**
+
