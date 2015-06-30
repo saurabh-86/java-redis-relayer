@@ -1,9 +1,8 @@
 PACKAGE=fk-redis-relayer
 USERNAME=fk-supply-chain
-STARTUP_COMMAND="com.flipkart.relayer.Application"
 
 check_process() {
-    PID=`pgrep -f "$STARTUP_COMMAND"`
+    PID=`pgrep -f "relayer.yml"`
 }
 
 start() {
