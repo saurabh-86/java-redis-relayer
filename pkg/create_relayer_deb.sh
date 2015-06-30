@@ -28,7 +28,6 @@ echo "Building fat jar ..."
 
 echo "Copying jar and yml to ${PACKAGE_ROOT} ..."
 cp build/libs/java-redis-relayer-1.0-all.jar $PACKAGE_ROOT/var/lib/$PACKAGE/redis-relayer-shaded.jar
-cp -r public $PACKAGE_ROOT/var/lib/$PACKAGE
 
 echo "Building debian ..."
 dpkg-deb -b $PACKAGE_ROOT
