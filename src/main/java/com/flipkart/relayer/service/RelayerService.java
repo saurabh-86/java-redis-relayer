@@ -21,6 +21,8 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.FutureRequestExecutionService;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,6 +35,8 @@ import static com.codahale.metrics.httpclient.HttpClientMetricNameStrategies.MET
  * Created by saurabh.agrawal on 26/06/15.
  */
 public class RelayerService extends AbstractIdleService {
+
+    private static final Logger logger = LoggerFactory.getLogger(RelayerService.class);
 
     private final String restbusUrl;
 
@@ -68,12 +72,6 @@ public class RelayerService extends AbstractIdleService {
                 return response.getStatusLine().getStatusCode() == 200;
             }
         };
-
-//        ConsoleReporter reporter = ConsoleReporter.forRegistry(this.metrics)
-//                .convertRatesTo(TimeUnit.SECONDS)
-//                .convertDurationsTo(TimeUnit.MILLISECONDS)
-//                .build();
-//        reporter.start(1, TimeUnit.SECONDS);
     }
 
     public void relay(@NonNull final Message message, final RelayerCallback relayerCallback) {
@@ -117,11 +115,12 @@ public class RelayerService extends AbstractIdleService {
 
     @Override
     protected void startUp() throws Exception {
-
+        logger.info("Starting RelayerService");
     }
 
     @Override
     protected void shutDown() throws Exception {
+        logger.info("Shutting down RelayerService");
         shutdownAndAwaitTermination(executorService);
         futureRequestExecutionService.close();
     }
@@ -134,7 +133,7 @@ public class RelayerService extends AbstractIdleService {
                 pool.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-                    System.err.println("Pool did not terminate");
+                    logger.error("Pool did not terminate");
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted

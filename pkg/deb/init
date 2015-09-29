@@ -12,7 +12,7 @@ start() {
         echo "Starting $PACKAGE..."
         ulimit -n 30000
         cd /var/lib/$PACKAGE
-        sudo -u $USERNAME java -server -Dcom.sun.management.jmxremote -Djava.net.preferIPv4Stack=true -Dcom.sun.management.jmxremote.port=40406 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -XX:+UseG1GC -jar redis-relayer-shaded.jar /etc/$PACKAGE/relayer.yml > /dev/null 2>&1 &
+        sudo -u $USERNAME java -server -Dlogback.configurationFile=/etc/$PACKAGE/logback.xml  -Dcom.sun.management.jmxremote -Djava.net.preferIPv4Stack=true -Dcom.sun.management.jmxremote.port=40406 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -XX:+UseG1GC -jar redis-relayer-shaded.jar /etc/$PACKAGE/relayer.yml > /dev/null 2>&1 &
         echo "Started $PACKAGE."
     else
         echo "The process is already running."

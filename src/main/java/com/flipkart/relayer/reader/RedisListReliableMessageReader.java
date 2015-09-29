@@ -5,6 +5,8 @@ import com.flipkart.relayer.model.Message;
 import com.flipkart.relayer.utils.MessageUtils;
 import com.google.common.base.Strings;
 import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import java.util.Date;
@@ -13,6 +15,8 @@ import java.util.Date;
  * Created by saurabh.agrawal on 26/06/15.
  */
 public class RedisListReliableMessageReader extends AbstractRedisMessageReader {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedisListReliableMessageReader.class);
 
     public RedisListReliableMessageReader(@NonNull String host, int port, String redisKey, ExchangeType exchangeType) {
         super(host, port, redisKey, exchangeType);
@@ -28,10 +32,13 @@ public class RedisListReliableMessageReader extends AbstractRedisMessageReader {
             Message message = null;
             final String reply = jedis.brpoplpush(redisKey, getProcessingListKey(redisKey), 1);
 
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
+                logger.error("Thread interrupted");
                 throw new InterruptedException();
+            }
 
             if (!Strings.isNullOrEmpty(reply)) {
+                logger.debug("Raw redis value {} popped from {}", reply, redisKey);
                 String messageId = MessageUtils.getMessageId(reply);
                 Date createdAt = MessageUtils.getMessageCreatedAt(reply);
                 message = loadMessage(messageId, createdAt, jedis);

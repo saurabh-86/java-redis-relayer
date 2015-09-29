@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by saurabh.agrawal on 27/06/15.
@@ -30,7 +32,11 @@ public class Application {
 
     private static final MetricRegistry metrics = new MetricRegistry();
 
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+
     public static void main(String[] args) throws FileNotFoundException {
+
+        logger.info("Starting application");
 
         String configFilePath = DEFAULT_CONFIG_FILE;
         if (args.length > 0)
@@ -54,12 +60,6 @@ public class Application {
         final ServiceManager manager = new ServiceManager(services);
         manager.startAsync();
 
-//        ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
-//                .convertRatesTo(TimeUnit.SECONDS)
-//                .convertDurationsTo(TimeUnit.MILLISECONDS)
-//                .build();
-//        reporter.start(1, TimeUnit.SECONDS);
-
         final JmxReporter reporter = JmxReporter.forRegistry(metrics).build();
         reporter.start();
 
@@ -69,13 +69,13 @@ public class Application {
             public void run()
             {
                 manager.stopAsync();
-                System.out.println("Waiting for services to stop...");
+                logger.info("Waiting for services to stop...");
                 try {
                     manager.awaitStopped(10, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     e.printStackTrace();
                 }
-                System.out.println("Done!");
+                logger.info("Done!");
             }
         });
     }

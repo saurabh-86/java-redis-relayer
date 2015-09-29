@@ -3,12 +3,17 @@ package com.flipkart.relayer.reader;
 import com.flipkart.relayer.model.Message;
 import lombok.AllArgsConstructor;
 import org.apache.http.concurrent.FutureCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by saurabh.agrawal on 27/06/15.
  */
 @AllArgsConstructor
 public abstract class RelayerCallback implements FutureCallback<Boolean> {
+
+    protected static final Logger logger = LoggerFactory.getLogger(RelayerCallback.class);
+
     protected final String key;
 
     protected final Message message;
@@ -21,6 +26,7 @@ public abstract class RelayerCallback implements FutureCallback<Boolean> {
 
     @Override
     public void completed(Boolean result) {
+        logger.info("Relay of {} completed with result {}", message.getMessageId(), result);
         if (result) {
             relaySuccess();
         } else {
@@ -30,7 +36,7 @@ public abstract class RelayerCallback implements FutureCallback<Boolean> {
 
     @Override
     public void failed(Exception ex) {
-        System.err.println("Relayer threw exception " + ex.getMessage());
+        logger.error("Relayer threw exception " + ex.getMessage());
         relayException(ex);
     }
 
