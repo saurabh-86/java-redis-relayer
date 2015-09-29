@@ -24,12 +24,20 @@ public class MessageListProcessor extends AbstractExecutionThreadService {
     protected void run() throws Exception {
         while (isRunning()) {
             final Message message = reader.next();
-            final RelayerCallback relayerCallback = reader.createCallbackHandler(message);
-            try {
-                relayerService.relay(message, relayerCallback);
-            } catch (RejectedExecutionException ex) {
-                System.err.println("Dropping message. " + ex.getMessage());
+            if (message != null) {
+                final RelayerCallback relayerCallback = reader.createCallbackHandler(message);
+                try {
+                    relayerService.relay(message, relayerCallback);
+                } catch (RejectedExecutionException ex) {
+                    System.err.println("Dropping message. " + ex.getMessage());
+                }
             }
         }
     }
+
+    @Override
+    protected void triggerShutdown() {
+        Thread.currentThread().interrupt();
+    }
+
 }

@@ -18,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by saurabh.agrawal on 27/06/15.
@@ -49,7 +51,7 @@ public class Application {
         services.add(relayerService);
         services.addAll(MessageListProcessorFactory.build(relayerConfig.getSources(), relayerService));
 
-        ServiceManager manager = new ServiceManager(services);
+        final ServiceManager manager = new ServiceManager(services);
         manager.startAsync();
 
 //        ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
@@ -60,5 +62,21 @@ public class Application {
 
         final JmxReporter reporter = JmxReporter.forRegistry(metrics).build();
         reporter.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread()
+        {
+            @Override
+            public void run()
+            {
+                manager.stopAsync();
+                System.out.println("Waiting for services to stop...");
+                try {
+                    manager.awaitStopped(10, TimeUnit.SECONDS);
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Done!");
+            }
+        });
     }
 }

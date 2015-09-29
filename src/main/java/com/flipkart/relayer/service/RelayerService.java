@@ -42,9 +42,12 @@ public class RelayerService extends AbstractIdleService {
 
     private final MetricRegistry metrics;
 
+    private final ExecutorService executorService;
+
     public RelayerService(String restbusUrl, int maxRestbusConnections,
                           ExecutorService executorService, MetricRegistry metrics) {
         this.restbusUrl = restbusUrl;
+        this.executorService = executorService;
         this.metrics = metrics;
 
         final InstrumentedHttpClientConnectionManager connectionManager =
@@ -66,11 +69,11 @@ public class RelayerService extends AbstractIdleService {
             }
         };
 
-        ConsoleReporter reporter = ConsoleReporter.forRegistry(this.metrics)
-                .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build();
-        reporter.start(1, TimeUnit.SECONDS);
+//        ConsoleReporter reporter = ConsoleReporter.forRegistry(this.metrics)
+//                .convertRatesTo(TimeUnit.SECONDS)
+//                .convertDurationsTo(TimeUnit.MILLISECONDS)
+//                .build();
+//        reporter.start(1, TimeUnit.SECONDS);
     }
 
     public void relay(@NonNull final Message message, final RelayerCallback relayerCallback) {
@@ -119,6 +122,25 @@ public class RelayerService extends AbstractIdleService {
 
     @Override
     protected void shutDown() throws Exception {
+        shutdownAndAwaitTermination(executorService);
         futureRequestExecutionService.close();
+    }
+
+    void shutdownAndAwaitTermination(ExecutorService pool) {
+        pool.shutdown(); // Disable new tasks from being submitted
+        try {
+            // Wait a while for existing tasks to terminate
+            if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+                pool.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+                    System.err.println("Pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            pool.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
     }
 }

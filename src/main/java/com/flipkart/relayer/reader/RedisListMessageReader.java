@@ -22,7 +22,11 @@ public class RedisListMessageReader extends AbstractRedisMessageReader {
     public Message next() throws Exception {
         try (Jedis jedis = jedisPool.getResource()) {
             Message message = null;
-            final List<String> brpop = jedis.brpop(0, redisKey);
+            final List<String> brpop = jedis.brpop(1, redisKey);
+
+            if (Thread.interrupted())
+                throw new InterruptedException();
+
             if (!brpop.isEmpty()) {
                 String value = brpop.get(1);
                 String messageId = MessageUtils.getMessageId(value);

@@ -4,7 +4,7 @@ Section: web
 Priority: Optional
 Architecture: all
 Essential: no
-Depends: oracle-java7-installer
+Depends: oracle-j2sdk1.8
 Installed-Size: 1000
 Maintainer: Saurabh Agrawal saurabh.agrawal@flipkart.com
 Description: Redis Relayer

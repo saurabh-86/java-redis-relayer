@@ -4,8 +4,20 @@ sources:
     port: 6379
     key: bigfoot_main
     numThreads: 2
-    reliable: false
+    reliable: true
     exchangeType: QUEUE
+  - host: localhost
+    port: 6379
+    key: outbound_main_messages
+    numThreads: 2
+    reliable: true
+    exchangeType: QUEUE
+  - host: localhost
+    port: 6379
+    key: outbound_main
+    numThreads: 2
+    reliable: true
+    exchangeType: TOPIC
 maxRestbusConnections: 1000
 relayerQueueType: THROTTLE
 relayerQueueSize: 100

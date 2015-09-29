@@ -26,7 +26,11 @@ public class RedisListReliableMessageReader extends AbstractRedisMessageReader {
     public Message next() throws Exception {
         try (Jedis jedis = jedisPool.getResource()) {
             Message message = null;
-            final String reply = jedis.brpoplpush(redisKey, getProcessingListKey(redisKey), 0);
+            final String reply = jedis.brpoplpush(redisKey, getProcessingListKey(redisKey), 1);
+
+            if (Thread.interrupted())
+                throw new InterruptedException();
+
             if (!Strings.isNullOrEmpty(reply)) {
                 String messageId = MessageUtils.getMessageId(reply);
                 Date createdAt = MessageUtils.getMessageCreatedAt(reply);
