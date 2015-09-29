@@ -19,3 +19,6 @@ chown -R $USERNAME:$GROUPNAME /var/lib/$PACKAGE
 chown -R $USERNAME:$GROUPNAME /var/log/flipkart/$PACKAGE
 chown -R $USERNAME:$GROUPNAME /etc/$PACKAGE
 chown $USERNAME:$GROUPNAME /etc/init.d/$PACKAGE
+
+host=$(hostname -f)
+sed -i -e "s/_HOST_/${host}/" /etc/cosmos-jmx/covenant-relayer.json

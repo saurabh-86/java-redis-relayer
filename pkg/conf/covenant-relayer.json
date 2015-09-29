@@ -1,0 +1,13 @@
+{
+  "servers" : [
+    {
+      "port" : "40406",
+      "host" : "_HOST_",
+      "queries" : [ {
+        "obj" : "*",
+        "saperator" : "."
+      }],
+      "numQueryThreads" : 2
+    }
+  ]
+}

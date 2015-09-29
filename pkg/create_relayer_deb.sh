@@ -9,6 +9,7 @@ mkdir -p $PACKAGE_ROOT
 mkdir -p $PACKAGE_ROOT/DEBIAN
 mkdir -p $PACKAGE_ROOT/var/lib/$PACKAGE
 mkdir -p $PACKAGE_ROOT/etc/$PACKAGE
+mkdir -p $PACKAGE_ROOT/etc/cosmos-jmx
 mkdir -p $PACKAGE_ROOT/etc/init.d
 mkdir -p $PACKAGE_ROOT/var/log/flipkart/$PACKAGE
 
@@ -19,6 +20,8 @@ cp pkg/deb/postrm $PACKAGE_ROOT/DEBIAN/postrm
 cp pkg/deb/preinst $PACKAGE_ROOT/DEBIAN/preinst
 cp pkg/deb/prerm $PACKAGE_ROOT/DEBIAN/prerm
 cp pkg/deb/init $PACKAGE_ROOT/etc/init.d/$PACKAGE
+cp pkg/conf/covenant-relayer.json $PACKAGE_ROOT/etc/cosmos-jmx/covenant-relayer.json
+cp pkg/conf/relayer.yml $PACKAGE_ROOT/etc/fk-redis-relayer/relayer.yml
 
 echo "Updating version in control file ..."
 sed -e "s/VERSION/${VERSION}/" -i $PACKAGE_ROOT/DEBIAN/control
