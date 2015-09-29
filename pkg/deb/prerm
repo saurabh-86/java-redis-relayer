@@ -1,13 +1,6 @@
 #! /bin/bash
 
 PACKAGE=fk-redis-relayer
-LOGFILE=athena.log
-STATUSFILE=appstatus.html
-
-echo "Taking $PACKAGE Out Of Rotation..." | tee -a /var/log/dpkg.log || true
-cd /var/lib/$PACKAGE || true
-mv ./public/$STATUSFILE ./public/old-$STATUSFILE || true
-sleep 10 || true
 
 if [ -f /etc/init.d/$PACKAGE ];then
 	bash /etc/init.d/$PACKAGE stop || true

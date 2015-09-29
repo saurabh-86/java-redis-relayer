@@ -22,6 +22,7 @@ cp pkg/deb/prerm $PACKAGE_ROOT/DEBIAN/prerm
 cp pkg/deb/init $PACKAGE_ROOT/etc/init.d/$PACKAGE
 cp pkg/conf/covenant-relayer.json $PACKAGE_ROOT/etc/cosmos-jmx/covenant-relayer.json
 cp pkg/conf/relayer.yml $PACKAGE_ROOT/etc/fk-redis-relayer/relayer.yml
+cp pkg/conf/logback.xml $PACKAGE_ROOT/etc/fk-redis-relayer/logback.xml
 
 echo "Updating version in control file ..."
 sed -e "s/VERSION/${VERSION}/" -i $PACKAGE_ROOT/DEBIAN/control
